@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Patenteável?</title>
+<style>:root{
+  /* Layout: cartão central de quiz, botões grandes para toque no celular */
+  --bg:#f3f5f8; --card:#ffffff; --ink:#1b2433; --muted:#5b6474; --line:#d5dce4;
+  --accent:#16324f; --accent-ink:#ffffff; --accent-soft:#e3ecf5; --link:#1f5f9e;
+  --ok:#1e7a46; --ok-soft:#e2f3e9; --bad:#a3312b; --bad-soft:#f8e4e2; --warn:#8a5a00; --warn-soft:#fbf0d9;
+  --opt-k:#16324f;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f151d; --card:#17202b; --ink:#e7ecf2; --muted:#9aa6b5; --line:#2b3746;
+  --accent:#1f4a73; --accent-ink:#ffffff; --accent-soft:#1d2c3d; --link:#8cc0f0;
+  --ok:#5fcf8f; --ok-soft:#173326; --bad:#f08a80; --bad-soft:#3a1f1d; --warn:#f0c46a; --warn-soft:#352a12;
+  --opt-k:#8cc0f0; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f151d; --card:#17202b; --ink:#e7ecf2; --muted:#9aa6b5; --line:#2b3746;
+  --accent:#1f4a73; --accent-ink:#ffffff; --accent-soft:#1d2c3d; --link:#8cc0f0;
+  --ok:#5fcf8f; --ok-soft:#173326; --bad:#f08a80; --bad-soft:#3a1f1d; --warn:#f0c46a; --warn-soft:#352a12;
+  --opt-k:#8cc0f0; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Segoe UI",Calibri,Arial,Helvetica,sans-serif;font-size:20px;line-height:1.45}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--accent);color:var(--accent-ink);flex-wrap:wrap}
+header h1{margin:0;font-size:1.25rem;font-weight:600;letter-spacing:.2px}
+header .sub{font-size:.8rem;opacity:.85}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav button{font:inherit;font-size:.85rem;padding:8px 14px;border-radius:8px;border:1px solid var(--accent-ink);
+  background:transparent;color:var(--accent-ink);cursor:pointer;opacity:.9}
+nav button.on{background:var(--accent-ink);color:#16324f;font-weight:600;opacity:1}
+main{max-width:1180px;margin:0 auto;padding-block:22px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 30px;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.meta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.85rem;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--opt-k);font-weight:600;font-size:.8rem}
+h2{margin:.1em 0 .5em;font-size:1.55rem;line-height:1.25}
+.case{font-size:1.2rem;margin:0 0 20px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.opt{font:inherit;font-size:1.05rem;text-align:left;padding:16px 18px;border-radius:12px;border:2px solid var(--line);
+  background:var(--card);cursor:pointer;color:var(--ink);min-height:56px}
+.opt:hover{border-color:var(--accent)}
+.opt .k{display:inline-block;min-width:28px;height:28px;line-height:28px;text-align:center;border-radius:6px;
+  background:var(--accent-soft);color:var(--opt-k);font-weight:700;margin-right:10px;font-size:.9rem}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+.answer{margin-top:20px;padding:18px 20px;border-radius:12px;background:var(--accent-soft);display:none}
+.answer.show{display:block}
+.answer .verdict{font-weight:700;font-size:1.1rem;margin-bottom:6px}
+.answer .verdict.ok{color:var(--ok)} .answer .verdict.no{color:var(--bad)}
+.answer .base{margin-top:10px;font-size:.92rem;color:var(--ink)}
+.answer .base b{color:var(--opt-k)}
+.answer .src{margin-top:8px;font-size:.78rem;color:var(--muted);word-break:break-word}
+.answer .src a{color:var(--link)}
+.note{margin-top:10px;font-size:.85rem;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--warn)}
+.ctrl{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:10px;flex-wrap:wrap}
+.btn{font:inherit;font-size:.95rem;padding:12px 18px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.btn.ghost{background:var(--card);color:var(--opt-k);border-color:var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.score{font-size:.95rem;color:var(--muted)}
+.score b{color:var(--ink)}
+.progress{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.progress i{display:block;height:100%;background:var(--opt-k);width:0}
+/* calculadora */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:6px}
+input,select{font:inherit;font-size:1.05rem;padding:10px 12px;border:1px solid var(--line);border-radius:10px;width:100%;background:var(--card);color:var(--ink)}
+.res{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.box{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--card)}
+.box h3{margin:0 0 8px;font-size:1rem;color:var(--muted);font-weight:600}
+.big{font-size:1.9rem;font-weight:700;color:var(--opt-k);font-variant-numeric:tabular-nums}
+.box.old .big{color:var(--bad)}
+.small{font-size:.85rem;color:var(--muted);margin-top:6px}
+/* intro */
+.intro p{margin:.4em 0}
+.keys{font-size:.8rem;color:var(--muted);margin-top:14px}
+kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--card);font-size:.8rem}
+footer{max-width:1180px;margin:0 auto;padding-block:0 30px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));font-size:.75rem;color:var(--muted)}
+@media (max-width:640px){body{font-size:17px} .card{padding:18px} header h1{font-size:1.1rem} nav button{font-size:.8rem;padding:7px 10px} .case{font-size:1.08rem}}
+.opt:focus-visible,.btn:focus-visible,nav button:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.case,.answer{min-width:0;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Patenteável?</h1>
+    <div class="sub">Criações Industriais — Patentes de Invenção e Modelo de Utilidade · PI e Função Social (FADISP 2026/2)</div>
+  </div>
+  <nav id="nav">
+    <button data-v="intro" class="on">Início</button>
+    <button data-v="r1">1 · Invenção, MU ou nada?</button>
+    <button data-v="r2">2 · De quem é?</button>
+    <button data-v="calc">3 · Calculadora de vigência</button>
+  </nav>
+</header>
+
+<main id="main"></main>
+
+<footer>
+  Funciona no celular e no computador; não usa IA. Base legal: Lei 9.279/1996 (LPI), redação consolidada na Câmara dos Deputados; ADI 5.529 (STF, 2021); Lei 14.195/2021; Parecer nº 00024/2022/CGPI/PFE-INPI/PGF/AGU.
+  Material didático — não substitui a leitura do texto legal oficial.
+</footer>
+
+<script>
+const LPI = "https://www2.camara.leg.br/legin/fed/lei/1996/lei-9279-14-maio-1996-374644-normaatualizada-pl.html";
+const ADI = "https://www.demarest.com.br/julgamento-da-acao-direta-de-inconstitucionalidade-adi-5529/";
+const DABUS = "https://www.mayerbrown.com/en/insights/publications/2023/04/brazil-artificial-intelligence--can-be-an-inventor-in--patent-application";
+const UKSC = "https://www.burges-salmon.com/articles/102iwau/supreme-court-finds-that-ai-machines-cannot-be-inventors-for-the-purpose-of-pat";
+
+const R1 = [
+ {t:"Cadeira escolar com um novo encaixe entre assento e encosto que melhora o apoio lombar e facilita a montagem.",
+  o:["Invenção","Modelo de utilidade","Não é patenteável"], a:1,
+  e:"Objeto de uso prático com nova forma/disposição que gera melhoria funcional no uso ou na fabricação.",
+  b:"<b>LPI, art. 9º</b> (modelo de utilidade) e <b>art. 14</b> (ato inventivo: não decorrer de maneira comum ou vulgar do estado da técnica). Prazo: 15 anos do depósito (art. 40).", s:[LPI]},
+ {t:"Novo processo químico para produzir fertilizante nitrogenado com 30% menos consumo de energia, não óbvio para um técnico da área.",
+  o:["Invenção","Modelo de utilidade","Não é patenteável"], a:0,
+  e:"Solução técnica nova, com atividade inventiva e aplicação industrial. Processo não é “objeto de uso prático” — não cabe MU.",
+  b:"<b>LPI, art. 8º</b> (novidade, atividade inventiva, aplicação industrial), <b>art. 13</b> (não evidente/óbvio) e <b>art. 15</b>. Prazo: 20 anos do depósito (art. 40).", s:[LPI]},
+ {t:"Um cirurgião desenvolve um novo método operatório para reconstrução de ligamento do joelho.",
+  o:["Invenção","Modelo de utilidade","Não é patenteável"], a:2,
+  e:"Técnicas e métodos operatórios ou cirúrgicos aplicados ao corpo humano não são considerados invenção. (Instrumentos cirúrgicos novos, por outro lado, podem ser.)",
+  b:"<b>LPI, art. 10, VIII</b>.", s:[LPI]},
+ {t:"Pesquisadores isolam uma bactéria encontrada no solo do Pantanal que degrada óleo diesel.",
+  o:["Invenção","Modelo de utilidade","Não é patenteável"], a:2,
+  e:"Ser vivo / material biológico encontrado na natureza é descoberta, não invenção.",
+  b:"<b>LPI, art. 10, IX</b> e <b>art. 18, III</b>.", s:[LPI]},
+ {t:"A mesma bactéria é geneticamente modificada em laboratório e passa a degradar também plásticos — característica que não existe na natureza.",
+  o:["Invenção","Modelo de utilidade","Não é patenteável"], a:0,
+  e:"Microrganismo transgênico que atende novidade, atividade inventiva e aplicação industrial e não é mera descoberta é a exceção expressa do art. 18, III.",
+  b:"<b>LPI, art. 18, III</b> (exceção dos microrganismos transgênicos) c/c <b>art. 8º</b>.", s:[LPI]},
+ {t:"Startup cria um aplicativo de delivery com interface inovadora. Pede patente “do aplicativo”.",
+  o:["Invenção","Modelo de utilidade","Não é patenteável"], a:2,
+  e:"Programa de computador “em si” não é invenção — o código é protegido por direito autoral (Lei 9.609/98). Debate: invenção implementada por programa que resolve problema técnico pode ser patenteável (verificar Diretrizes de Exame do INPI).",
+  b:"<b>LPI, art. 10, V</b>.", s:[LPI], n:"Ponto de debate: “programa em si” × invenção implementada por computador."},
+ {t:"Varejista cria um novo método de cashback progressivo que fideliza clientes.",
+  o:["Invenção","Modelo de utilidade","Não é patenteável"], a:2,
+  e:"Esquemas, planos, princípios ou métodos comerciais não são considerados invenção.",
+  b:"<b>LPI, art. 10, III</b>.", s:[LPI]},
+ {t:"Uma IA (sistema DABUS) concebe sozinha um recipiente de alimentos com nova geometria. O pedido indica a IA como inventora.",
+  o:["Pode — a IA é a inventora","Não pode indicar a IA como inventora","Vira domínio público automaticamente"], a:1,
+  e:"O INPI firmou entendimento de que sistemas de IA não podem ser indicados como inventores (Parecer nº 00024/2022, set./2022, RPI 2696, pedido BR 11 2021 008931). A Suprema Corte do Reino Unido decidiu no mesmo sentido (Thaler v. Comptroller-General, dez./2023).",
+  b:"<b>Parecer nº 00024/2022/CGPI/PFE-INPI/PGF/AGU</b>. Questão aberta: se a IA torna “óbvio” o que antes era inventivo, o padrão do art. 13 sobe?", s:[DABUS,UKSC], n:"Ponto de debate: IA e o “técnico no assunto”."},
+ {t:"Uma pesquisadora publicou um artigo descrevendo seu invento 8 meses antes de depositar o pedido de patente. A novidade foi destruída?",
+  o:["Sim — perdeu a novidade","Não — está no período de graça","Depende do INPI"], a:1,
+  e:"A divulgação feita pelo próprio inventor nos 12 meses anteriores ao depósito não integra o estado da técnica (período de graça). O INPI pode exigir declaração sobre a divulgação.",
+  b:"<b>LPI, art. 12, I</b> (e parágrafo único) c/c <b>art. 11</b>.", s:[LPI], n:"Atenção: no exterior o período de graça pode não existir (ex.: regra europeia) — publicar antes pode inviabilizar a patente fora do Brasil."},
+];
+
+const R2 = [
+ {t:"Engenheiro contratado para o setor de P&D de uma indústria desenvolve, no expediente, uma nova válvula patenteável.",
+  o:["Do empregador","Do empregado","Comum, em partes iguais"], a:0,
+  e:"Contrato cujo objeto é pesquisa/atividade inventiva → pertence exclusivamente ao empregador. A remuneração limita-se ao salário, salvo contrato em contrário; o empregador pode conceder participação nos ganhos, que não se incorpora ao salário.",
+  b:"<b>LPI, art. 88, caput e §1º</b>; <b>art. 89</b> e parágrafo único.", s:[LPI]},
+ {t:"Operador de máquina (não contratado para inventar) cria um dispositivo que reduz paradas da linha, usando a oficina e materiais da empresa.",
+  o:["Do empregador","Do empregado","Comum, em partes iguais"], a:2,
+  e:"Contribuição pessoal do empregado + recursos do empregador → propriedade comum, em partes iguais. O empregador tem direito exclusivo de licença de exploração e o empregado, justa remuneração. Se o empregador não explorar em 1 ano da concessão (sem acordo), a titularidade passa ao empregado.",
+  b:"<b>LPI, art. 91, caput, §2º e §3º</b>.", s:[LPI]},
+ {t:"Analista financeiro, em casa, nos fins de semana, sem usar nada da empresa, inventa um equipamento de irrigação.",
+  o:["Do empregador","Do empregado","Comum, em partes iguais"], a:1,
+  e:"Invenção desvinculada do contrato e sem uso de recursos, meios, dados, materiais, instalações ou equipamentos do empregador → exclusiva do empregado.",
+  b:"<b>LPI, art. 90</b>.", s:[LPI]},
+ {t:"Pesquisadora de P&D pede demissão e, 8 meses depois, deposita em seu nome patente de um invento da área em que trabalhava.",
+  o:["Presume-se do ex-empregador","É dela, sem discussão","É de domínio público"], a:0,
+  e:"Presume-se desenvolvida na vigência do contrato a invenção cuja patente for requerida pelo empregado até 1 ano após a extinção do vínculo — presunção relativa (admite prova em contrário).",
+  b:"<b>LPI, art. 88, §2º</b>.", s:[LPI]},
+ {t:"Estagiário e trabalhador autônomo contratados por uma empresa criam um modelo de utilidade no projeto contratado.",
+  o:["Aplicam-se as mesmas regras do empregado","São sempre donos do invento","A empresa é sempre dona"], a:0,
+  e:"As regras dos arts. 88 a 91 aplicam-se, no que couber, ao trabalhador autônomo, ao estagiário e às relações entre empresas contratantes e contratadas.",
+  b:"<b>LPI, art. 92</b>.", s:[LPI]},
+ {t:"Professor de universidade estadual, contratado para pesquisa, desenvolve uma invenção no laboratório da instituição.",
+  o:["Da universidade, com premiação ao inventor","Exclusivamente do professor","Do Estado, sem qualquer participação"], a:0,
+  e:"As regras do capítulo aplicam-se à Administração Pública (inclusive estadual). Nos casos do art. 88, o estatuto/regimento da entidade deve assegurar ao inventor premiação de parcela das vantagens auferidas. (Para ICTs, ver também a Lei de Inovação — Lei 10.973/2004 — verificar regras específicas.)",
+  b:"<b>LPI, art. 93, caput e parágrafo único</b>.", s:[LPI], n:"Ponte com o Direito do Trabalho e com a política de inovação das universidades públicas."},
+];
+
+let view="intro", idx={r1:0,r2:0}, score={r1:{ok:0,done:0},r2:{ok:0,done:0}}, answered={r1:{},r2:{}};
+const $=s=>document.querySelector(s);
+function esc(s){return s}
+function render(){
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===view));
+  if(view==="intro") return renderIntro();
+  if(view==="calc") return renderCalc();
+  renderRound(view);
+}
+function renderIntro(){
+  $("#main").innerHTML=`<div class="card intro">
+   <span class="pill">Dinâmica do seminário</span>
+   <h2>A patente ainda cumpre a promessa constitucional?</h2>
+   <p>CF/88, art. 5º, XXIX: privilégio temporário aos autores de inventos industriais, <i>“tendo em vista o interesse social e o desenvolvimento tecnológico e econômico do País”</i>.</p>
+   <p><b>Rodada 1</b> — Invenção, modelo de utilidade ou nada? (${R1.length} casos)</p>
+   <p><b>Rodada 2</b> — De quem é a invenção do empregado? (${R2.length} casos)</p>
+   <p><b>Rodada 3</b> — Calculadora de vigência: regra atual × regra derrubada pela ADI 5.529.</p>
+   <p style="margin-top:14px">No celular: leia o caso, toque na sua resposta e veja a explicação com a base legal. Em sala: a turma vota de mão levantada e o apresentador toca na alternativa da maioria.</p>
+   <div class="keys">Atalhos: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> escolhem a alternativa · <kbd>→</kbd> próximo · <kbd>←</kbd> anterior</div>
+   <div class="ctrl"><span></span><button class="btn" onclick="go('r1')">Começar a Rodada 1 →</button></div>
+  </div>`;
+}
+function renderRound(r){
+  const L = r==="r1"?R1:R2, i=idx[r], c=L[i], prev=answered[r][i];
+  const title = r==="r1"?"Rodada 1 · Invenção, MU ou nada?":"Rodada 2 · De quem é?";
+  $("#main").innerHTML=`<div class="card">
+   <div class="progress"><i style="width:${(i+1)/L.length*100}%"></i></div>
+   <div class="meta"><span class="pill">${title}</span><span>Caso ${i+1} de ${L.length}</span></div>
+   <p class="case">${c.t}</p>
+   <div class="opts">${c.o.map((o,k)=>`<button class="opt" data-k="${k}"><span class="k">${k+1}</span>${o}</button>`).join("")}</div>
+   <div class="answer" id="ans"></div>
+   <div class="ctrl">
+     <button class="btn ghost" ${i===0?"disabled":""} onclick="step(-1)">← Anterior</button>
+     <span class="score">Turma: <b>${score[r].ok}</b> acerto(s) em <b>${score[r].done}</b></span>
+     ${i<L.length-1?`<button class="btn" onclick="step(1)">Próximo →</button>`:
+       `<button class="btn" onclick="go('${r==="r1"?"r2":"calc"}')">${r==="r1"?"Ir para a Rodada 2 →":"Ir para a Calculadora →"}</button>`}
+   </div></div>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>choose(r,+b.dataset.k));
+  if(prev!==undefined) reveal(r,prev,false);
+}
+function choose(r,k){
+  const i=idx[r]; if(answered[r][i]!==undefined) return;
+  answered[r][i]=k; score[r].done++; const L=r==="r1"?R1:R2; if(k===L[i].a) score[r].ok++;
+  renderRound(r);
+}
+function reveal(r,k){
+  const L=r==="r1"?R1:R2, c=L[idx[r]];
+  document.querySelectorAll(".opt").forEach(b=>{b.disabled=true;const kk=+b.dataset.k;
+    if(kk===c.a) b.classList.add("right"); else if(kk===k) b.classList.add("wrong");});
+  const ok=k===c.a, a=$("#ans");
+  a.innerHTML=`<div class="verdict ${ok?"ok":"no"}">${ok?"A turma acertou.":"Resposta correta: "+c.o[c.a]}</div>
+   <div>${c.e}</div><div class="base">Base: ${c.b}</div>
+   ${c.n?`<div class="note">${c.n}</div>`:""}
+   <div class="src">Conferir: ${c.s.map(u=>`<a href="${u}" target="_blank" rel="noopener">${u}</a>`).join(" · ")}</div>`;
+  a.classList.add("show");
+}
+function step(d){const L=view==="r1"?R1:R2; idx[view]=Math.max(0,Math.min(L.length-1,idx[view]+d)); renderRound(view);}
+function go(v){view=v;render();window.scrollTo(0,0)}
+document.getElementById("nav").onclick=e=>{if(e.target.dataset.v) go(e.target.dataset.v)};
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
+  if(view==="r1"||view==="r2"){
+    if(["1","2","3"].includes(e.key)) choose(view,+e.key-1);
+    if(e.key==="ArrowRight"){const L=view==="r1"?R1:R2; if(idx[view]<L.length-1) step(1);}
+    if(e.key==="ArrowLeft") step(-1);
+  }
+});
+
+/* Calculadora */
+function addYears(d,y){const n=new Date(d.getTime()); n.setFullYear(n.getFullYear()+y); return n;}
+function fmt(d){return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"})}
+function renderCalc(){
+  $("#main").innerHTML=`<div class="card">
+   <div class="meta"><span class="pill">Rodada 3 · Calculadora de vigência</span><span>LPI, art. 40</span></div>
+   <h2>Até quando vale a patente?</h2>
+   <div class="grid2">
+     <div><label for="tp">Tipo</label><select id="tp"><option value="PI">Patente de invenção (20 anos)</option><option value="MU">Modelo de utilidade (15 anos)</option></select></div>
+     <div><label for="dep">Data de depósito</label><input type="date" id="dep" value="2012-03-15"></div>
+     <div><label for="con">Data de concessão (para comparar com a regra antiga)</label><input type="date" id="con" value="2024-06-10"></div>
+   </div>
+   <div class="res" id="res"></div>
+   <div class="note" style="margin-top:18px">Regra antiga (art. 40, parágrafo único): garantia mínima de 10 anos (invenção) ou 7 anos (MU) contados da concessão. Declarada inconstitucional na ADI 5.529 (STF, 2021) e revogada pela Lei 14.195/2021. Efeitos a partir da publicação da ata, com efeitos retroativos para patentes de produtos/processos farmacêuticos e de equipamentos/materiais de saúde e para ações ajuizadas até 07/04/2021. O cálculo é ilustrativo (não considera anuidades, caducidade ou extinção antecipada).</div>
+   <div class="src" style="margin-top:8px;font-size:.78rem;color:var(--muted)">Conferir: <a href="${LPI}" target="_blank" rel="noopener">${LPI}</a> · <a href="${ADI}" target="_blank" rel="noopener">${ADI}</a></div>
+  </div>`;
+  ["tp","dep","con"].forEach(id=>$("#"+id).addEventListener("input",calc)); calc();
+}
+function calc(){
+  const tp=$("#tp").value, dv=$("#dep").value, cv=$("#con").value; const out=$("#res");
+  if(!dv){out.innerHTML="";return;}
+  const dep=new Date(dv+"T12:00:00"), base=tp==="PI"?20:15, min=tp==="PI"?10:7;
+  const fimAtual=addYears(dep,base);
+  let html=`<div class="box"><h3>Regra atual — ${base} anos do depósito</h3><div class="big">${fmt(fimAtual)}</div>
+    <div class="small">LPI, art. 40, caput.</div></div>`;
+  if(cv){
+    const con=new Date(cv+"T12:00:00"), fimMin=addYears(con,min);
+    const fimAntigo= fimMin>fimAtual?fimMin:fimAtual;
+    const extra=Math.round((fimAntigo-fimAtual)/(365.25*24*3600*1000)*10)/10;
+    const demora=(Math.round((con-dep)/(365.25*24*3600*1000)*10)/10).toLocaleString("pt-BR");
+    html+=`<div class="box old"><h3>Regra antiga — mínimo de ${min} anos da concessão</h3><div class="big">${fmt(fimAntigo)}</div>
+      <div class="small">Demora do exame: <b>${demora} anos</b>. Extensão que a regra antiga daria: <b>${extra>0?extra.toLocaleString("pt-BR")+" anos":"nenhuma"}</b> além do prazo do caput.</div></div>`;
+  }
+  out.innerHTML=html;
+}
+render();
+</script>
+</body>
+</html>
